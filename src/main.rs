@@ -21,35 +21,42 @@ impl Dish {
 const TAKEAWAY_FEE: u32 = 1;
 
 #[derive(Debug, Clone)]
-struct Order; // TODO
+struct Order {
+    list: Vec<Dish>,
+    takeaway: bool,
+}
 
 impl Order {
     fn new() -> Order {
-        todo!()
+        Order {
+            list: Vec::new(),
+            takeaway: false,
+        }
     }
 
     fn add_dish(&mut self, dish: Dish) {
-        todo!()
+        let _grow32: u32 = (self.list.len()+1).try_into().unwrap();
+        self.list.push(dish);
     }
 
     fn set_takeaway(&mut self) {
-        todo!()
+        self.takeaway = true;
     }
 
     fn dish_count(&self, dish: Dish) -> u32 {
-        todo!()
+        self.list.iter().filter(|&d| *d == dish).count().try_into().unwrap()
     }
 
     fn items_count(&self) -> u32 {
-        todo!()
+        self.list.len().try_into().unwrap()
     }
 
     fn is_takeaway(&self) -> bool {
-        todo!()
+        self.takeaway
     }
 
     fn total(&self) -> u32 {
-        let sum = todo!();
+        let sum = self.list.iter().map(|d| d.price()).count().try_into().unwrap();
 
         if self.is_takeaway() {
             sum + self.items_count() * TAKEAWAY_FEE
