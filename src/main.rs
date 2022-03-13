@@ -1,5 +1,5 @@
-use std::fmt::{Display, Formatter};
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
 use std::io::stdin;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -36,10 +36,12 @@ impl Order {
     }
 
     fn add_dish(&mut self, dish: Dish) {
-        let _grow32: u32 = (self.list.len()+1).try_into().unwrap();
+        let _grow32: u32 = (self.list.len() + 1).try_into().unwrap();
         match self.list.get_mut(&dish) {
-            None => {self.list.insert(dish, 1);},
-            Some(v) => {*v += 1},
+            None => {
+                self.list.insert(dish, 1);
+            }
+            Some(v) => *v += 1,
         };
     }
 
@@ -61,7 +63,7 @@ impl Order {
     fn is_takeaway(&self) -> bool {
         self.takeaway
     }
-    
+
     fn is_empty(&self) -> bool {
         self.list.is_empty()
     }
@@ -104,12 +106,15 @@ impl VanBinh {
     pub fn new() -> VanBinh {
         VanBinh {
             orders_count: 1,
-            customers: Vec::new()
+            customers: Vec::new(),
         }
     }
 
     fn add_customer(&mut self, name: String, favorite_order: Order) {
-        self.customers.push(Customer { name, favorite_order })
+        self.customers.push(Customer {
+            name,
+            favorite_order,
+        })
     }
 
     fn get_saved_customer(&self, name: &str) -> Option<&Customer> {
