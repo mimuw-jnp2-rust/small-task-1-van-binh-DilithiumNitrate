@@ -1,4 +1,5 @@
 use std::fmt::{Display, Formatter};
+use std::collections::HashMap;
 use std::io::stdin;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -22,21 +23,24 @@ const TAKEAWAY_FEE: u32 = 1;
 
 #[derive(Debug, Clone)]
 struct Order {
-    list: Vec<Dish>,
+    list: HashMap<Dish, u32>,
     takeaway: bool,
 }
 
 impl Order {
     fn new() -> Order {
         Order {
-            list: Vec::new(),
+            list: HashMap::new(),
             takeaway: false,
         }
     }
 
     fn add_dish(&mut self, dish: Dish) {
         let _grow32: u32 = (self.list.len()+1).try_into().unwrap();
-        self.list.push(dish);
+        match self.list.get_mut(&dish) {
+            None => {self.list.insert(dish, 1);},
+            Some(v) => {*v += 1},
+        };
     }
 
     fn set_takeaway(&mut self) {
@@ -44,11 +48,14 @@ impl Order {
     }
 
     fn dish_count(&self, dish: Dish) -> u32 {
-        self.list.iter().filter(|&d| *d == dish).count().try_into().unwrap()
+        match self.list.get(&dish) {
+            None => 0,
+            Some(v) => *v,
+        }
     }
 
     fn items_count(&self) -> u32 {
-        self.list.len().try_into().unwrap()
+        self.list.values().sum()
     }
 
     fn is_takeaway(&self) -> bool {
@@ -60,7 +67,7 @@ impl Order {
     }
 
     fn total(&self) -> u32 {
-        let sum = self.list.iter().map(|d| d.price()).sum::<u32>();
+        let sum = self.list.iter().map(|e| e.0.price() * e.1).sum::<u32>();
 
         if self.is_takeaway() {
             sum + self.items_count() * TAKEAWAY_FEE
@@ -96,7 +103,7 @@ struct VanBinh {
 impl VanBinh {
     pub fn new() -> VanBinh {
         VanBinh {
-            orders_count: 0,
+            orders_count: 1,
             customers: Vec::new()
         }
     }
